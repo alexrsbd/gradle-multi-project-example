@@ -1,11 +1,11 @@
 name: Black Duck Rapid Scan
 
 # Run Rapid Scan on all pull requests and pushes to a main branch
-#on:
-#  pull_request:
-#    branches:
-#      - master
-#  push:
+on:
+  pull_request:
+    branches:
+      - master
+  push:
 
 
   #workflow_dispatch:
@@ -27,18 +27,11 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           
-      - name: Create certificate
-        run: cat <<< "${{secrets.BASE_64_CERTIFICATE_CONTENT}}" > /home/alexrs/my-ca-cert.pem
-      
-      - name: Pip Install
-        run: pip3 install -r ./requirements.txt
-
       # Run Synopsys Detect
       - name: Run Synopsys Detect
         uses: synopsys-sig/detect-action@main
       # This server does not require a local CA Cert
         env:
-          NODE_EXTRA_CA_CERTS: ${{ secrets.LOCAL_CA_CERT_PATH }}
         # Enable diagnostic mode
           DETECT_DIAGNOSTIC: true
           #NODE_EXTRA_CA_CERTS: /home/alexrs/my-ca-cert.pem 
@@ -47,6 +40,6 @@ jobs:
         with:
             scan-mode: RAPID
             github-token: ${{ secrets.GITHUB_TOKEN }}
-            detect-version: 7.9.0
+            detect-version: 8.3.0
             blackduck-url: ${{ secrets.BLACKDUCK_URL }}
             blackduck-api-token: ${{ secrets.BLACKDUCK_API_KEY }}
